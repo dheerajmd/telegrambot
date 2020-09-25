@@ -1,0 +1,34 @@
+!pip install adafruit-io
+x= "Dheeraj_" #ADAFRUIT_IO_USERNAME 
+y= "aio_mVCS11igVffAb7pI6DDfvI0GqWyt" #ADAFRUIT_IO_KEY 
+from Adafruit_IO import Client, Feed
+aio = Client(x,y)
+#create a feed
+new = Feed(name='bot123')#feed name is given
+result = aio.create_feed(new)
+result
+from Adafruit_IO import Data
+value=Data(value=0)
+value_send=aio.create_data('bot123',value)
+#telegram api
+#1how to create telegram bot
+#2.how to send query?
+!pip install python-telegram-bot
+from telegram.ext import Updater,CommandHandler
+import requests  # Getting the data from the cloud
+
+def get_url():
+    contents = requests.get('https://random.dog/woof.json').json()
+    url = contents['url']
+    return url
+
+def dog(bot,update):
+    url = get_url()
+    chat_id = update.message.chat_id
+    bot.send_photo(chat_id,photo=url)
+
+u = Updater('1393159011:AAH8_a0tlukW6nZKY2a06u29l-Y9L9xWQ6I')
+dp = u.dispatcher
+dp.add_handler(CommandHandler('dog',dog))
+u.start_polling()
+u.idle()
